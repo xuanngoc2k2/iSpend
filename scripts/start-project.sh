@@ -1,0 +1,231 @@
+#!/bin/bash
+
+# ============================================================
+# start-project.sh — Kick off a new project from this template
+# Usage: ./scripts/start-project.sh
+# Compatible: macOS + Linux
+# ============================================================
+
+set -e
+
+BOLD="\033[1m"
+GREEN="\033[0;32m"
+CYAN="\033[0;36m"
+YELLOW="\033[0;33m"
+RED="\033[0;31m"
+RESET="\033[0m"
+
+echo ""
+echo -e "${BOLD}╔══════════════════════════════════════════╗${RESET}"
+echo -e "${BOLD}║   🚀 Universal AI Project Starter        ║${RESET}"
+echo -e "${BOLD}╚══════════════════════════════════════════╝${RESET}"
+echo ""
+
+# ── Prereqs check ────────────────────────────────────────────
+if ! command -v git &> /dev/null; then
+  echo -e "${RED}❌ git not found. Please install git first.${RESET}"
+  exit 1
+fi
+
+# ── Step 1: Project name ────────────────────────────────────
+echo -e "${CYAN}Step 1/5: Project name${RESET}"
+read -p "  Tên project: " PROJECT_NAME
+
+if [ -z "$PROJECT_NAME" ]; then
+  echo -e "${RED}❌ Tên project không được để trống.${RESET}"
+  exit 1
+fi
+
+# ── Step 2: Brain dump ──────────────────────────────────────
+echo ""
+echo -e "${CYAN}Step 2/5: Brain dump ý tưởng${RESET}"
+echo -e "  ${YELLOW}Mô tả ngắn gọn về project (không cần chuẩn):${RESET}"
+echo -e "  ${YELLOW}App làm gì, user là ai, tính năng chính, stack muốn dùng...${RESET}"
+echo -e "  ${YELLOW}(Nhấn Enter 2 lần để xong, hoặc Enter ngay để skip)${RESET}"
+echo ""
+
+BRIEF=""
+while IFS= read -r line; do
+  # Empty line = done (Enter để kết thúc)
+  if [ -z "$line" ]; then
+    break
+  fi
+  if [ -n "$BRIEF" ]; then
+    BRIEF="${BRIEF}
+${line}"
+  else
+    BRIEF="${line}"
+  fi
+done
+
+if [ -z "$(echo "$BRIEF" | tr -d '[:space:]')" ]; then
+  BRIEF="(Chưa có mô tả — AI sẽ hỏi thêm trong Phase 0)"
+fi
+
+# ── Step 3: Specifications file ──────────────────────────────────────
+echo ""
+echo -e "${CYAN}Step 3/5: File mô tả chức năng (optional)${RESET}"
+echo -e "  ${YELLOW}Bạn có file mô tả chức năng sẵn không? (y/n)${RESET}"
+read -p "  Có file spec? (y/n): " HAS_SPEC
+
+if [[ "$HAS_SPEC" =~ ^[Yy]$ ]]; then
+  read -p "  Đường dẫn file: " SPEC_PATH
+  if [ -f "$SPEC_PATH" ]; then
+    # Read spec content and replace placeholder
+    SPEC_CONTENT=$(cat "$SPEC_PATH")
+    python3 -c "
+import sys
+content = open('docs/SPECIFICATIONS.md').read()
+content = content.replace('[SPECIFICATIONS_CONTENT]', sys.argv[1])
+open('docs/SPECIFICATIONS.md', 'w').write(content)
+" "$SPEC_CONTENT" 2>/dev/null || {
+      # Fallback: overwrite with original content
+      cp "$SPEC_PATH" docs/SPECIFICATIONS.md
+    }
+    echo -e "  ${GREEN}✅ Specifications → docs/SPECIFICATIONS.md${RESET}"
+  else
+    echo -e "  ${RED}⚠️  File không tồn tại: $SPEC_PATH — bỏ qua${RESET}"
+  fi
+else
+  echo -e "  ⏭️  Bỏ qua — AI sẽ hỏi thêm trong Phase 0"
+fi
+
+# ── Step 4: AI tools selection ──────────────────────────────────────
+echo ""
+echo -e "${CYAN}Step 4/5: Chọn AI tools sử dụng${RESET}"
+echo -e "  ${YELLOW}Nhập số (cách nhau bởi space), Enter để chọn tất cả:${RESET}"
+echo "  1) Claude Code / Opencode"
+echo "  2) Cursor"
+echo "  3) Windsurf"
+echo "  4) GitHub Copilot"
+echo "  5) Codex (AGENTS.md — luôn có)"
+echo ""
+read -p "  Chọn (ví dụ: 1 2 4): " TOOL_SELECTION
+
+# Default: all tools
+if [ -z "$TOOL_SELECTION" ]; then
+  TOOL_SELECTION="1 2 3 4 5"
+fi
+
+# ── Step 5: Setup files ───────────────────────────────────────────
+echo ""
+echo -e "${CYAN}Step 5/5: Đang setup files...${RESET}"
+
+TODAY=$(date +%Y-%m-%d)
+
+# Replace [PROJECT_NAME] in all markdown files (macOS compatible)
+find . -name "*.md" -not -path "./.git/*" -print0 | while IFS= read -r -d '' file; do
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    sed -i '' "s/\[PROJECT_NAME\]/$PROJECT_NAME/g" "$file" 2>/dev/null || true
+    sed -i '' "s/\[DATE\]/$TODAY/g" "$file" 2>/dev/null || true
+  else
+    sed -i "s/\[PROJECT_NAME\]/$PROJECT_NAME/g" "$file" 2>/dev/null || true
+    sed -i "s/\[DATE\]/$TODAY/g" "$file" 2>/dev/null || true
+  fi
+done
+
+# Write brain dump to docs/BRIEF.md (safe multiline replace)
+python3 -c "
+import sys
+content = open('docs/BRIEF.md').read()
+content = content.replace('[BRIEF_CONTENT]', sys.argv[1])
+open('docs/BRIEF.md', 'w').write(content)
+" "$BRIEF" 2>/dev/null || {
+  # Fallback: single-line sed if python3 not available
+  BRIEF_ONELINE=$(echo "$BRIEF" | tr '\n' ' ')
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    sed -i '' "s|\[BRIEF_CONTENT\]|${BRIEF_ONELINE}|" docs/BRIEF.md 2>/dev/null || true
+  else
+    sed -i "s|\[BRIEF_CONTENT\]|${BRIEF_ONELINE}|" docs/BRIEF.md 2>/dev/null || true
+  fi
+}
+
+echo -e "  ${GREEN}✅ Placeholders replaced${RESET}"
+echo -e "  ${GREEN}✅ Brain dump → docs/BRIEF.md${RESET}"
+
+# Remove unselected AI tool adapter files
+if [[ ! "$TOOL_SELECTION" =~ "1" ]]; then
+  rm -f CLAUDE.md
+  echo -e "  ⏭️  Skipped: CLAUDE.md"
+fi
+if [[ ! "$TOOL_SELECTION" =~ "2" ]]; then
+  rm -f .cursorrules
+  echo -e "  ⏭️  Skipped: .cursorrules"
+fi
+if [[ ! "$TOOL_SELECTION" =~ "3" ]]; then
+  rm -f .windsurfrules
+  echo -e "  ⏭️  Skipped: .windsurfrules"
+fi
+if [[ ! "$TOOL_SELECTION" =~ "4" ]]; then
+  rm -f .github/copilot-instructions.md
+  echo -e "  ⏭️  Skipped: copilot-instructions.md"
+fi
+
+echo -e "  ${GREEN}✅ AI adapter files configured${RESET}"
+
+# Create project folders
+mkdir -p src tests/unit tests/integration tests/e2e context memory
+echo -e "  ${GREEN}✅ Folders created: src/, tests/, context/, memory/${RESET}"
+
+# ── Git init + Hooks ────────────────────────────────────────
+rm -rf .git
+git init -b main > /dev/null 2>&1
+
+# Setup post-commit hook for auto-updating context
+mkdir -p .git/hooks
+cat << 'EOF' > .git/hooks/post-commit
+#!/bin/bash
+# Auto-update code knowledge graph after each commit
+if command -v code-review-graph &> /dev/null; then
+  code-review-graph update > /dev/null 2>&1 &
+fi
+EOF
+chmod +x .git/hooks/post-commit
+
+git add .
+git commit -m "feat: init $PROJECT_NAME project" -q
+echo -e "  ${GREEN}✅ Fresh git repo initialized with auto-context hook${RESET}"
+
+# ── Suggest code-review-graph ───────────────────────────────
+if ! command -v code-review-graph &> /dev/null; then
+  echo ""
+  echo -e "  ${YELLOW}💡 Gợi ý: Cài code-review-graph để AI navigate code thông minh hơn.${RESET}"
+  read -p "     Bạn có muốn cài đặt code-review-graph ngay bây giờ không? (y/n): " INSTALL_CRG
+  if [[ "$INSTALL_CRG" =~ ^[Yy]$ ]]; then
+    echo -e "     ${CYAN}Đang cài đặt code-review-graph...${RESET}"
+    if command -v pipx &> /dev/null; then
+        pipx install code-review-graph
+    elif command -v uv &> /dev/null; then
+        uv tool install code-review-graph
+    else
+        pip install code-review-graph
+    fi
+    
+    if command -v code-review-graph &> /dev/null; then
+        code-review-graph install
+        echo -e "     ${CYAN}Đang build knowledge graph...${RESET}"
+        code-review-graph build
+        echo -e "     ${GREEN}✅ code-review-graph đã được cài đặt và build thành công.${RESET}"
+    else
+        echo -e "     ${RED}❌ Lỗi cài đặt code-review-graph. Vui lòng cài đặt thủ công: pip install code-review-graph && code-review-graph build${RESET}"
+    fi
+  else
+    echo -e "     ${YELLOW}⏭️  Bỏ qua cài đặt code-review-graph. Bạn có thể cài sau bằng lệnh: pip install code-review-graph && code-review-graph build${RESET}"
+  fi
+fi
+
+# ── Done ────────────────────────────────────────────────────
+echo ""
+echo -e "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
+echo -e "${BOLD}  ✅ Project sẵn sàng!${RESET}"
+echo -e "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
+echo ""
+echo -e "  📁 ${YELLOW}$(pwd)${RESET}"
+echo ""
+echo -e "  Bước tiếp theo:"
+echo -e "  ${CYAN}1. Mở folder này bằng AI tool bất kỳ${RESET}"
+echo -e "  ${CYAN}2. Nói: \"bắt đầu\"${RESET}"
+echo -e "  ${CYAN}3. AI tự chạy Phase 0 → plan → code 🚀${RESET}"
+echo ""
+echo -e "${GREEN}${BOLD}Happy building! 🎉${RESET}"
+echo ""

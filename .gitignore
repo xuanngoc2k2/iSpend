@@ -1,0 +1,32 @@
+# .gitignore
+
+# Dependencies
+node_modules/
+.cache/
+
+# Build
+dist/
+build/
+__pycache__/
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+*.log
+
+# Memory (private session logs)
+memory/*.md
+!memory/.gitkeep
+
+# Code-Review-Graph (knowledge graph cache — regenerate with code-review-graph build)
+.code-review-graph/
+
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
