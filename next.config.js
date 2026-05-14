@@ -1,10 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Bật rõ ràng App Router. Mặc dù mặc định trong Next.js 14+,
-  // việc khai báo rõ ràng có thể giúp Vercel phát hiện đúng cấu trúc.
-  experimental: {
-    appDir: true,
-  },
+  // File cấu hình tối thiểu. Next.js 14+ thường tự động phát hiện
+  // thư mục app/ hoặc pages/ kể cả khi chúng nằm trong thư mục src/.
 };
 
 module.exports = nextConfig;
