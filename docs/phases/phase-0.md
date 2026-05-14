@@ -2,16 +2,16 @@
 
 > **Goal:** Design rõ ràng, spec được approve, phases + tasks sẵn sàng trước khi code.
 > **Output:** Design doc trong `docs/specs/` + phases + tasks
-> **Status:** ⬜ Todo
+> **Status:** ✅ Done
 
 ---
 
 ## Definition of Done
-- [ ] Có ít nhất 1 file trong `docs/specs/`
-- [ ] `docs/IMPLEMENTATION_PLAN.md` đã viết (plan tổng)
-- [ ] `AGENTS.md` đã điền Stack + Folder Structure
-- [ ] `tasks/layer-0-todo.md` có tasks cho Layer 0
-- [ ] User đã approve spec (ghi rõ trong commit message)
+- [x] Có ít nhất 1 file trong `docs/specs/`
+- [x] `docs/IMPLEMENTATION_PLAN.md` đã viết (plan tổng)
+- [x] `AGENTS.md` đã điền Stack + Folder Structure
+- [x] `tasks/layer-0-todo.md` có tasks cho Layer 0
+- [x] User đã approve spec (ghi rõ trong commit message)
 
 ---
 

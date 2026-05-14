@@ -1,4 +1,4 @@
-# Implementation Plan: [PROJECT_NAME]
+# Implementation Plan: iSpend
 
 > Bản đồ TỔNG của project. Tạo trong Phase 0, **KHÔNG BAO GIỜ XÓA**.
 > Chỉ update status khi hoàn thành phase/layer.
@@ -7,52 +7,50 @@
 
 ## Project Overview
 
-**Objective:** [Mô tả ngắn gọn mục tiêu project]
-**Stack:** [Điền sau khi chọn approach]
-**Timeline:** [Ước tính]
+**Objective:** Quản lý chi tiêu cá nhân với trải nghiệm mobile-first iOS-style.
+**Stack:** Next.js, Tailwind, Framer Motion, Zustand, Supabase.
+**Timeline:** Ước tính 5-7 ngày.
 
 ---
 
 ## Phases
 
-<!-- 
-Status: ⬜ Todo | 🔄 In Progress | ✅ Done
-Update status khi bắt đầu/kết thúc phase.
--->
-
-### Phase 0 — Planning ⬜
+### Phase 0 — Planning ✅
 - Output: Design spec, ADRs, phases, tasks
 - Details: `docs/phases/phase-0.md`
 
-### Phase 1 — [Tên Phase] ⬜
-- Scope: [Mô tả ngắn]
-- Layers: [Số layer dự kiến]
-- Definition of Done: [Tiêu chí hoàn thành]
+### Phase 1 — Foundation & Auth ✅
+- Scope: Setup project, Supabase config, Auth flow, Layout cơ bản.
+- Layers: 2
+- Definition of Done: Có thể login/logout, project structure sẵn sàng.
 - Details: `docs/phases/phase-1.md`
 
-<!-- Thêm phases theo scope project:
-
-### Phase 2 — [Tên Phase] ⬜
-- Scope: [Mô tả]
-- Layers: [Số layer]
-- Definition of Done: [Tiêu chí]
+### Phase 2 — Core Features (Home & Entry) ✅
+- Scope: Dashboard, Calendar, Add Expense Flow (Keyboard, Form).
+- Layers: 2
+- Definition of Done: Có thể nhập chi tiêu và xem trên Dashboard.
 - Details: `docs/phases/phase-2.md`
 
-### Phase 3 — [Tên Phase] ⬜
-...
--->
+### Phase 3 — Camera & Image Storage ✅
+- Scope: Custom WebRTC Camera, upload ảnh lên Supabase Storage.
+- Layers: 2
+- Definition of Done: Có thể chụp ảnh và gắn vào giao dịch.
+- Details: `docs/phases/phase-3.md`
+
+### Phase 4 — Statistics & Polish ✅
+- Scope: Statistics page, Charts, Animations, Final UI Polish.
+- Layers: 2
+- Definition of Done: App hoàn thiện, mượt mà, đúng style iOS.
+- Details: `docs/phases/phase-4.md`
 
 ---
 
-## Layer Overview (Phase hiện tại)
-
-> Section này được **overwrite** mỗi khi chuyển phase.
-> Xem chi tiết layer tại `tasks/layer-N-todo.md`.
+## Layer Overview (Phase hiện tại: Phase 1)
 
 | Layer | Mô tả | Status |
 |-------|--------|--------|
-| Layer 0 | Foundation | ⬜ |
-| Layer 1 | [Tùy scope] | ⬜ |
+| Layer 0 | Project Initialization & Base Styles | ⬜ |
+| Layer 1 | Supabase Setup & Auth Flow | ⬜ |
 
 ---
 
@@ -60,14 +58,15 @@ Update status khi bắt đầu/kết thúc phase.
 
 | # | Decision | Rationale | ADR |
 |---|----------|-----------|-----|
-| 1 | [Quyết định] | [Lý do] | `docs/decisions/001-xxx.md` |
+| 1 | Supabase Backend | Rapid development, Auth/DB/Storage bundled. | `docs/decisions/001-supabase-backend.md` |
+| 2 | Custom WebRTC Camera | Native iOS look and feel. | `docs/decisions/002-custom-webrtc-camera.md` |
 
 ---
 
 ## Risks & Assumptions
 
-- **Risk:** [Mô tả risk] → **Mitigation:** [Cách giảm thiểu]
-- **Assumption:** [Giả định đang dùng]
+- **Risk:** WebRTC camera permissions on iOS Safari. → **Mitigation:** Fallback to native file input if permission denied.
+- **Assumption:** User has a Supabase account or will use provided credentials.
 
 ---
 

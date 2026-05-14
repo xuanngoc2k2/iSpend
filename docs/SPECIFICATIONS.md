@@ -1,50 +1,64 @@
-# Specifications: [PROJECT_NAME]
+# Specifications: iSpend
 
 > Chi tiết requirements và chức năng của project.
-> File này **optional** — nếu user có sẵn file mô tả, nội dung sẽ được paste vào đây.
-> AI đọc file này cùng với `docs/BRIEF.md` trong Phase 0.
 
 ---
 
 ## Functional Requirements
 
-<!-- Liệt kê chức năng cần có -->
+### 1. Home Page
+- Header chào hỏi ("Chào buổi sáng ☀️"), tên user, badge trạng thái.
+- Toggle view Ngày/Tháng.
+- Summary cards: Chi (Đỏ), Thu (Xanh).
+- Wallet filters (Tất cả, Wallet, Bank).
+- Monthly Calendar grid với các điểm đánh dấu giao dịch.
+- FAB (Floating Action Button) dấu "+" để thêm chi tiêu.
 
-[SPECIFICATIONS_CONTENT]
+### 2. Add Expense Flow
+- **Step 1: Camera/Picker**
+  - Custom WebRTC Camera UI.
+  - Chụp ảnh, chọn ảnh từ gallery, hoặc bỏ qua.
+- **Step 2: Add Expense Page**
+  - Background là ảnh vừa chụp blur nhẹ.
+  - Input số tiền cực lớn (Placeholder "0đ").
+  - Category chips (Ăn uống, Sức khỏe, Di chuyển, Mua sắm, Khác).
+  - Wallet selector.
+  - Toggle Thu/Chi.
+  - Custom Numeric Keypad.
+
+### 3. Statistics Page
+- Toggle Tháng/Năm/Tất cả.
+- Navigation giữa các tháng.
+- Animated Donut Chart hiển thị tổng chi tiêu.
+- Danh sách category với phần trăm và progress bar.
+
+### 4. Bottom Tab Bar
+- Floating nav: Trang chủ, Thống kê, Tài khoản, Ngân sách, Cá nhân.
 
 ---
 
 ## Non-Functional Requirements
 
-<!-- Performance, Security, Scalability, Availability, etc. -->
-
-- **Performance:** [Thời gian load, response time, etc.]
-- **Security:** [Auth method, data protection, etc.]
-- **Scalability:** [Số user đồng thời, growth plan, etc.]
+- **Performance:** Load nhanh, animation mượt 60fps trên mobile.
+- **Security:** Supabase Auth (Email/Google).
+- **UX:** iOS-like interactions, touch feedback, safe area support.
+- **UI:** Dark mode #0B0B12, Glassmorphism, Rounded corners (24-32px).
 
 ---
 
-## User Stories (nếu có)
+## User Stories
 
-<!-- Format: As a [role], I want to [action], so that [benefit] -->
-
-_Sẽ được bổ sung trong Phase 0 nếu cần._
+- As a user, I want to take a photo of my receipt so I don't forget what I bought.
+- As a user, I want a big keypad to enter amounts quickly on the go.
+- As a user, I want to see my spending distribution in a beautiful chart.
 
 ---
 
 ## UI/UX Notes
 
-<!-- Wireframe links, design references, brand guidelines, etc. -->
-
-_Để trống nếu chưa có — AI sẽ đề xuất trong Phase 0._
-
----
-
-## Constraints
-
-<!-- Budget, timeline, tech constraints, hosting requirements, etc. -->
-
-_Để trống nếu chưa có._
+- Refer to `/images` for visual guidelines.
+- Primary color: Subtle gradients, iOS Dark system.
+- Font: San Francisco (system default).
 
 ---
 
