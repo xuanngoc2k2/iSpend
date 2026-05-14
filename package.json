@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "vercel-build": "cd src && next build"
+    "vercel-build": "cd src && next build --debug"
   },
   "dependencies": {
     "@supabase/ssr": "^0.3.0",
